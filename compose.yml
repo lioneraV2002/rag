@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  pgvector:
+    image: ankane/pgvector
+    container_name: pgvector
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: raguser
+      POSTGRES_PASSWORD: ragpassword
+      POSTGRES_DB: ragdb
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "8000:8000"
+
+  server:
+    build:
+      context: ./rag-server
+    depends_on:
+      - pgvector
+      - ollama
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./rag-server/pdfs:/data/pdfs
+
