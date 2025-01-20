@@ -105,6 +105,8 @@ public class PGVectorDB {
      * Initializes the database by creating necessary tables.
      */
     private void initializeDatabase() {
+        String createExtension = "CREATE EXTENSION IF NOT EXISTS vector;";
+
         String createTableSQL = "CREATE TABLE IF NOT EXISTS embeddings (" +
                 "id SERIAL PRIMARY KEY, " +
                 "key TEXT NOT NULL UNIQUE, " +
@@ -113,7 +115,10 @@ public class PGVectorDB {
 
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
              Statement stmt = connection.createStatement()) {
+            stmt.execute(createExtension);
+            System.out.println("pgvector extension enabled successfully!");
             stmt.execute(createTableSQL);
+            System.out.println("pgvector table created successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
