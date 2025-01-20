@@ -8,13 +8,16 @@ import java.io.IOException;
 
 public class PDFProcessor {
     private final PGVectorDB pgVectorDB;
+    private final String directory;
+
 
     public PDFProcessor() {
-        this.pgVectorDB = new PGVectorDB(Constants.PGVECTOR_DB_URL);
+        this.pgVectorDB = new PGVectorDB();
+        this.directory = Constants.PDF_DIRECTORY;
     }
 
     public void embedPDFs() {
-        String directory = Constants.PDF_DIRECTORY;
+
         File folder = new File(directory);
         File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
 

@@ -1,5 +1,7 @@
 package com.example.ragserver.utils;
 
+import com.example.ragserver.model.Constants;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.*;
@@ -7,8 +9,8 @@ import java.io.*;
 public class OllamaClient {
     private final String apiUrl;
 
-    public OllamaClient(String apiUrl) {
-        this.apiUrl = apiUrl;
+    public OllamaClient() {
+        this.apiUrl = Constants.OLLAMA_API_URL;
     }
 
     public String process(String input, String context) {

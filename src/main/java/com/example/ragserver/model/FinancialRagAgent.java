@@ -6,13 +6,16 @@ public class FinancialRagAgent implements RagAgent {
     private final PGVectorDB pgVectorDB;
 
     public FinancialRagAgent() {
-        this.ollamaClient = new OllamaClient(Constants.OLLAMA_API_URL);
-        this.pgVectorDB = new PGVectorDB(Constants.PGVECTOR_DB_URL);
+        this.ollamaClient = new OllamaClient();
+        this.pgVectorDB = new PGVectorDB();
     }
 
+    @Override
     public String generateResponse(String input) {
         String vectorContext = String.valueOf(pgVectorDB.query(input, 20));
         String ollamaResponse = ollamaClient.process(input, vectorContext);
         return "Agent Response: " + ollamaResponse + "\nContext: " + vectorContext;
     }
+
+
 }
