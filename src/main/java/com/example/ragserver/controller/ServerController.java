@@ -1,7 +1,7 @@
 package com.example.ragserver.controller;
 
 import com.example.ragserver.model.Constants;
-import com.example.ragserver.service.RagService;
+import com.example.ragserver.service.FinancialRagService;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,10 +12,10 @@ import java.util.concurrent.Executors;
 public class ServerController {
     private static final int PORT = Constants.SERVER_PORT;
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(10);
-    private final RagService ragService;
+    private final FinancialRagService financialRagService;
 
     public ServerController() {
-        this.ragService = new RagService();
+        this.financialRagService = new FinancialRagService();
     }
 
     public void startServer() {
@@ -23,11 +23,11 @@ public class ServerController {
             System.out.println("Server running on port " + PORT + "...");
 
             // Process PDFs before accepting clients
-            ragService.processPDFs();
+            financialRagService.processPDFs();
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                THREAD_POOL.execute(() -> ragService.handleClient(clientSocket));
+                THREAD_POOL.execute(() -> financialRagService.handleClient(clientSocket));
             }
         } catch (IOException e) {
             e.printStackTrace();
