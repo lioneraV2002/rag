@@ -2,9 +2,12 @@ package com.example.ragserver.utils;
 
 import com.example.ragserver.model.Constants;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.io.*;
 
 public class OllamaClient {
     private final String apiUrl;
@@ -15,13 +18,18 @@ public class OllamaClient {
 
     public String process(String input, String context) {
         try {
-            URL url = new URL(apiUrl + "/generate");
+            URL url = new URL(apiUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
-            String payload = "{\"input\": \"" + input + "\", \"context\": \"" + context + "\"}";
+            // Include all necessary parameters
+            // this request only works with llama3.2
+            String payload = "{\"model\": \"llama3.2:1b\", " +
+                    "\"prompt\": \"" + input + "\"," +
+                    " \"context\": \"" + context + "\"," +
+                    " \"stream\": false}";
             try (OutputStream os = conn.getOutputStream()) {
                 os.write(payload.getBytes());
             }
