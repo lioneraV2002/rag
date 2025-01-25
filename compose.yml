@@ -1,30 +1,30 @@
 version: '3.8'
 
-services:
-  pgvector:
-    image: ankane/pgvector
-    container_name: pgvector
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: raguser
-      POSTGRES_PASSWORD: ragpassword
-      POSTGRES_DB: ragdb
+networks:
+  rag_network:
+    driver: bridge  # You can specify the driver if needed, 'bridge' is the default
 
+services:
   ollama:
     image: ollama/ollama
     container_name: ollama
     ports:
-      - "8000:8000"
+      - "11434:11434"  # Expose port 11434 for external access
+    networks:
+      - rag_network  # Connect to the custom network
 
   server:
     build:
-      context: ./rag-server
+      context: .
+      dockerfile: Dockerfile
+    container_name: ragserver
     depends_on:
-      - pgvector
       - ollama
     ports:
       - "8080:8080"
     volumes:
       - ./rag-server/pdfs:/data/pdfs
+    networks:
+      - rag_network  # Connect to the custom network
+
 
