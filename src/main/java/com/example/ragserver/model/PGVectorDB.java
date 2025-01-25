@@ -1,7 +1,5 @@
 package com.example.ragserver.model;
 
-import org.postgresql.util.PSQLException;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +9,23 @@ public class PGVectorDB {
     private final String dbUser;
     private final String dbPassword;
 
-    public PGVectorDB() {
-        this.dbUrl = Constants.PGVECTOR_DB_URL;
-        this.dbUser = Constants.PG_VECTOR_DB_USER;
-        this.dbPassword = Constants.PG_DB_PASSWORD;
+    // The single instance of PGVectorDB
+    private static PGVectorDB instance;
+
+    // Private constructor to prevent instantiation
+    private PGVectorDB() {
+        dbUrl = System.getenv("DATABASE_URL");
+        dbUser = System.getenv("DATABASE_USER");
+        dbPassword = System.getenv("DATABASE_PASSWORD");
         this.initializeDatabase();
+    }
+
+    // Public method to get the single instance of PGVectorDB
+    public static PGVectorDB getInstance() {
+        if (instance == null) {
+            instance = new PGVectorDB();
+        }
+        return instance;
     }
 
     /**
@@ -28,16 +38,15 @@ public class PGVectorDB {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Replace this with the actual vectorization logic.
             List<Float> embedding = fakeVectorize(content);
-
-            String sql = "INSERT INTO embeddings (key, vector, content) " +
-                    "VALUES (?, ?, ?) " +
-                    "ON CONFLICT (key) DO NOTHING;";
+            System.out.println(content + "\n---> " + embedding);
+            String sql = "INSERT INTO embeddings (key, embedding, content) VALUES (?, ?, ?) ON CONFLICT (key) DO NOTHING;";
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, key);
                 stmt.setArray(2, connection.createArrayOf("float4", embedding.toArray()));
                 stmt.setString(3, content); // Store the original content
                 stmt.executeUpdate();
+                System.out.println("Information inserted.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,17 +65,15 @@ public class PGVectorDB {
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Replace this with the actual vectorization logic.
             List<Float> queryVector = fakeVectorize(input);
-
-            String sql = "SELECT key, content, 1 - (vector <-> ?) AS similarity " +
-                    "FROM embeddings " +
-                    "ORDER BY vector <-> ? ASC LIMIT ?;";
+            String sql = "SELECT key, content, (embedding <=> ?) AS similarity FROM" +
+                    " embeddings ORDER BY embedding <=> ? ASC LIMIT ?;";
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setArray(1, connection.createArrayOf("float4", queryVector.toArray()));
                 stmt.setArray(2, connection.createArrayOf("float4", queryVector.toArray()));
                 stmt.setInt(3, topN);
-
                 ResultSet rs = stmt.executeQuery();
+
                 while (rs.next()) {
                     String key = rs.getString("key");
                     String content = rs.getString("content");
@@ -74,18 +81,15 @@ public class PGVectorDB {
                     results.add(new ContextResult(key, content, similarity));
                 }
             }
-        } catch (PSQLException e) {
+        } catch (Exception e) {
             System.err.println("Ensure pgvector extension is installed in the database.");
-            e.printStackTrace();
-        } catch (SQLException e) {
             e.printStackTrace();
         }
         return results;
     }
 
-
     /**
-     * Simulates vectorization of text. Replace this with actual vectorization logic.
+     * Simulates vectorization of text.
      *
      * @param text The input text to vectorize.
      * @return A dummy float array representing the vector.
@@ -100,25 +104,26 @@ public class PGVectorDB {
         return vector;
     }
 
-
     /**
      * Initializes the database by creating necessary tables.
      */
     private void initializeDatabase() {
-        String createExtension = "CREATE EXTENSION IF NOT EXISTS vector;";
-
+        String createExtension = "CREATE EXTENSION IF NOT EXISTS VECTOR;";
         String createTableSQL = "CREATE TABLE IF NOT EXISTS embeddings (" +
                 "id SERIAL PRIMARY KEY, " +
                 "key TEXT NOT NULL UNIQUE, " +
-                "vector VECTOR (128) NOT NULL, " +
+                "embedding VECTOR (128)," +
                 "content TEXT NOT NULL);";
 
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
              Statement stmt = connection.createStatement()) {
-            stmt.execute(createExtension);
+
+            stmt.executeUpdate(createExtension);
             System.out.println("pgvector extension enabled successfully!");
-            stmt.execute(createTableSQL);
+
+            stmt.executeUpdate(createTableSQL);
             System.out.println("pgvector table created successfully!");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
