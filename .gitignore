@@ -189,5 +189,5 @@ target
 README.html
 .exercism
 
-qdrant_data/*
-pdfs/*
+qdrant_data/
+pdfs/
