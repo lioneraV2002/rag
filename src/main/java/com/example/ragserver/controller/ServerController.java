@@ -23,11 +23,13 @@ public class ServerController {
      * Starts the server and listens for client connections.
      */
     public void startServer() {
+        // Process texts before accepting clients
+        System.out.println("importing text embeddings into database.");
+        financialRagService.processTexts();
+        System.out.println("imported text embeddings into database.");
+
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server running on port " + PORT + "...");
-
-            // Process PDFs before accepting clients
-            financialRagService.processPDFs();
 
             // Listen for incoming connections
             while (running) {
