@@ -10,24 +10,62 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <protoc.version>3.24.3</protoc.version>
+        <grpc.version>1.59.0</grpc.version>
     </properties>
 
     <dependencies>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <version>3.3</version>
-        </dependency>
+        <!-- Qdrant Client -->
         <dependency>
             <groupId>io.qdrant</groupId>
             <artifactId>client</artifactId>
             <version>1.13.0</version>
         </dependency>
+
+        <!-- gRPC Core and API -->
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>1.59.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-protobuf</artifactId>
+            <version>1.59.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>1.59.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.14</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Protobuf -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.25.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty</artifactId>
+            <version>1.59.0</version>
+        </dependency>
+
     </dependencies>
+
     <build>
         <plugins>
+            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -37,6 +75,9 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+
+
+            <!-- JAR Packaging Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -46,11 +87,13 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.example.ragserver.Main</mainClass> <!-- Specify your main class here -->
+                            <mainClass>com.example.ragserver.Main</mainClass> <!-- Specify your main class -->
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+
+            <!-- Shade Plugin for Fat JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -66,6 +109,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
