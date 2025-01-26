@@ -3,16 +3,16 @@ import com.example.ragserver.utils.OllamaClient;
 
 public class FinancialRagAgent implements RagAgent {
     private final OllamaClient ollamaClient;
-    private final PGVectorDB pgVectorDB;
+    private final QdrantClientWrapper qdrantClientWrapper;
 
     public FinancialRagAgent() {
         this.ollamaClient = new OllamaClient();
-        this.pgVectorDB = PGVectorDB.getInstance();
+        this.qdrantClientWrapper = QdrantClientWrapper.getInstance();
     }
 
     @Override
     public String generateResponse(String input) {
-        String vectorContext = String.valueOf(pgVectorDB.query(input, 20));
+        String vectorContext = String.valueOf(qdrantClientWrapper.query(input, 20));
         String ollamaResponse = ollamaClient.process(input, vectorContext);
         return "Agent Response: <" + ollamaResponse + ">\n" + "Context: <" + vectorContext + ">";
     }

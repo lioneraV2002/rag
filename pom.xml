@@ -13,17 +13,17 @@
     </properties>
 
     <dependencies>
-    <dependency>
-        <groupId>io.qdrant</groupId>
-        <artifactId>client</artifactId>
-        <version>1.13.0</version>
-    </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-site-plugin</artifactId>
             <version>3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qdrant</groupId>
+            <artifactId>client</artifactId>
+            <version>1.13.0</version>
         </dependency>
     </dependencies>
     <build>
