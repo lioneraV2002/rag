@@ -20,10 +20,15 @@ services:
     container_name: ragserver
     depends_on:
       - ollama
+      - qdrant
     ports:
       - "8080:8080"
     networks:
       - rag_network  # Connect to the custom network
+    environment:
+      - QDRANT_PORT=6333
+      - QDRANT_CONTAINER_NAME=qdrant
+
   qdrant:
     image: qdrant/qdrant
     container_name: qdrant
@@ -33,4 +38,3 @@ services:
       - ./qdrant_data:/qdrant/storage
     networks:
       - rag_network
-
