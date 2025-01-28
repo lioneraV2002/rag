@@ -81,8 +81,8 @@ public class FinancialRag {
         return modelResponse +
                 System.lineSeparator() +
                 "The response was first found at file:\n" +
-                dbResults.get(0).getMetadata().get(PagePdfDocumentReader.METADATA_FILE_NAME) +
+                dbResults.getFirst().getMetadata().get(PagePdfDocumentReader.METADATA_FILE_NAME) +
                 "And page:\n" +
-                dbResults.get(0).getMetadata().get(PagePdfDocumentReader.METADATA_START_PAGE_NUMBER);
+                dbResults.getFirst().getMetadata().get(PagePdfDocumentReader.METADATA_START_PAGE_NUMBER);
     }
 }
