@@ -6,7 +6,8 @@ public enum RagModelsConstants {
             Use the information from the DOCUMENTS section to provide accurate financial suggestions,
             summaries, and analyses for the question in the QUESTION section.
             If unsure, simply state that you don't know.
-          """);
+          """),
+    RAG_SIMILAR_ANSWERS_COUNT("20");
 
 
     private final String value;

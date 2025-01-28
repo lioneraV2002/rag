@@ -58,11 +58,16 @@ public class FinancialRag {
 //    @Override
     public String query(String prompt) {
         // getting results based on similarity search
-        List<Document> dbResults = vectorStore.doSimilaritySearch(SearchRequest.query(prompt).withTopK(10));
+        List<Document> dbResults = vectorStore.doSimilaritySearch(
+                SearchRequest
+                        .builder()
+                        .query(prompt)
+                        .topK(Integer.parseInt(RagModelsConstants.RAG_SIMILAR_ANSWERS_COUNT.getValue()))
+                        .build());
 
         // combining results to create a single unified string
         String resultsCombined = dbResults.stream()
-                .map(Document::getContent)
+                .map(Document::getFormattedContent)
                 .collect(Collectors.joining(System.lineSeparator()));
 
         // generating prompt to send to the model
