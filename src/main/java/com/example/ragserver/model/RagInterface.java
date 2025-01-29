@@ -9,13 +9,6 @@ import org.springframework.stereotype.Service;
 
 interface RagInterface {
     /**
-     * Uploads a PDF document from the specified path.
-     *
-     * @param path the file path of the PDF document to be uploaded.
-     */
-    void uploadPDF(String path);
-
-    /**
      * Queries the uploaded documents with the given prompt.
      *
      * @param prompt the query string to search for in the documents.
