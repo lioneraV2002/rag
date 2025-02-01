@@ -61,6 +61,11 @@ public class VectorizationService implements CommandLineRunner {
         this.vectorStore = vectorStore;
     }
 
+    /**
+     * this method is to read pdf data, split it into chunks of Document objects,
+     * and ingest those objects into the pgvector database.
+     * @param args incoming main method arguments
+     */
     @Override
     public void run(String... args) {
         log.info("Vectorization Service started");
