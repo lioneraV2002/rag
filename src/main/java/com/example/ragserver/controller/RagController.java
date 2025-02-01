@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,11 +43,14 @@ public class RagController {
     public ResponseEntity<String> query(@RequestParam(value = "prompt") String question) {
         try {
             logger.info("RagController query question is: {}", question);
+            // sending prompt to financial rag service to process it
             String response = financialRag.query(question);
             logger.info("RagController query response is: {}", response);
             logger.info("Returning response <{}> to user", response);
+            // sending the response back to user
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
+            // if there were any errors, print them and send and error message to user
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }

@@ -27,7 +27,7 @@ public class FinancialRag implements RagInterface {
         logger.info("Creating FinancialRag");
         this.client = builder
                 // use the pdf as part of the context from the pgvector database
-                .defaultSystem(RagModelsConstants.FINANCIAL_RAG_MESSAGE_TO_MODEL.getValue())
+                .defaultSystem(String.valueOf(RagModelsConstants.FINANCIAL_RAG_MESSAGE_TO_MODEL.getValue()))
                 .defaultAdvisors(new QuestionAnswerAdvisor(vectorStore))
                 .build();
         logger.info("Created FinancialRag");
