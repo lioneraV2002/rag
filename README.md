@@ -35,21 +35,28 @@ To prevent this, the project POM contains empty overrides for these elements.
 If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
 
 ### The steps that should be taken to run this project.
-* install ollama on your local computer.
+* install ollama and docker desktop on your local computer.
 * pull model llama3.2:1b using ollama cli; the command is `ollama pull llama3.2:1b`.
-* then run the model using `ollama run llama3.2:1b` command.
+* then run command `ollama serve` to serve ollama before running its model.
+* then open another cmd terminal and run the model using `ollama run llama3.2:1b` command.
 * clone this project into your local repository.  
-* make the necessary adjustments to be able to run a spring boot project with java version 23 and spring version 3.4.2.
-* finally, just run the project.
-  * The pgvector container will be run automatically, its database created as it is set in `compose.yml` file's configurations, 
-  * and then, the project will ingest vector embeddings of the pdf in the `Docs/` directory into the database.
-  * the connection is made to the llama3.2:1b model as well.
-  * and then you can send your queries using curl or other tools such as postman or the http request services implemented in intellij idea.
-    * one sample of the structure of the request to be sent to the project is as follows:
-      * `POST http://localhost:8080/rag/query?
-              prompt={{$random.alphanumeric(8)}}
-              Content-Type: application/x-www-form-urlencoded`
-  * after sending your prompt about the pdf file's data ingested in pgvector database, wait for a couple seconds for the llm to process your answer.
-  * after processing, you will get the closest answer the llm has got based on the information provided from the database.
+* make the necessary adjustments to be able to run a spring boot project with java version 23 and spring version 3.3.4.
+* also depending on the type of llm you want to choose, you should:
+* Set the following in `application.properties`:
+```properties
+spring.profiles.active=ollama/openai 
+```
+* Depending on what you chose the llm you are going to use will differ and so will the other configurations you should make:
+* for openai you should set the api key for your account to have access to your api.
+* i have set the compose file for both llms the same (`compose.yaml`) which you can build and run using `docker-compose -f compose.yaml -d` , but if you want to, perhaps, run ollama on a container, you can use the compose-ollama.yaml file for your dockerized project and run `docker-compose -f compose-ollama.yaml -d`. In which case, you may use the following commands to pull the necessary models into your container's ollama:
+```bash
+docker exec -it ollama ollama pull nomic-embed-text llama3.2:1b
+```
+* and further verify the models' existence using the following command:
+```bash
+docker exec -it ollama ollama list
+```
+* Of course, you can choose other models for embedding vectors or chatting with according to your taste.
+* Finally, start the application and use apis `/query` and `/upload` to communicate with spring project server and llms connected to it.
 * When you are done, don't forget to stop the project and the container both.
 * Have fun playing. ;) 
