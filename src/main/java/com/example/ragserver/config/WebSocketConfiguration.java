@@ -3,7 +3,6 @@ package com.example.ragserver.config;
 import java.io.IOException;
 
 import com.example.ragserver.model.FinancialRagService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -48,10 +47,14 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @EnableWebSocket
 class WebSocketConfiguration implements WebSocketConfigurer {
 
-	@Autowired
-	private FinancialRagService documentService;
-	
-	@Override
+
+	private final FinancialRagService documentService;
+
+    WebSocketConfiguration(FinancialRagService documentService) {
+        this.documentService = documentService;
+    }
+
+    @Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(new TextWebSocketHandler() {
 			@Override
