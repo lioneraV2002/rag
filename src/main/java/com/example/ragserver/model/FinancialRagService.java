@@ -8,6 +8,52 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * Service class responsible for handling document uploads and querying using Retrieval-Augmented Generation (RAG).
+ * This class implements the {@link RagInterface} and provides functionality to upload PDF documents, tokenize their content,
+ * and store the resulting tokens in a vector store. It also supports querying the RAG model to generate responses based on
+ * the uploaded documents.
+ *
+ * <p>Key functionalities:</p>
+ * <ul>
+ *     <li><b>PDF Upload:</b> Reads and tokenizes PDF documents using {@link PagePdfDocumentReader} and {@link TokenTextSplitter},
+ *     then stores the tokens in a {@link VectorStore} for retrieval.</li>
+ *     <li><b>Query Handling:</b> Uses a {@link ChatClient} to process user queries and generate responses based on the content
+ *     stored in the vector store.</li>
+ * </ul>
+ *
+ * <p>Workflow:</p>
+ * <ol>
+ *     <li>A PDF document is uploaded via the {@link #uploadPDF(Resource)} method.</li>
+ *     <li>The document is read, tokenized, and stored in the vector store.</li>
+ *     <li>User queries are processed using the {@link #query(String)} method, which leverages the RAG model to generate responses.</li>
+ * </ol>
+ *
+ * <p>Dependencies:</p>
+ * <ul>
+ *     <li>{@link ChatClient}: Used to interact with the RAG model for querying.</li>
+ *     <li>{@link VectorStore}: Stores tokenized document content for retrieval.</li>
+ *     <li>{@link PagePdfDocumentReader}: Reads and extracts content from PDF documents.</li>
+ *     <li>{@link TokenTextSplitter}: Splits document content into tokens for processing.</li>
+ * </ul>
+ *
+ * <p>Example usage:</p>
+ * <pre>
+ * // Upload a PDF document
+ * financialRagService.uploadPDF(pdfResource);
+ *
+ * // Query the RAG model
+ * String response = financialRagService.query("What is the revenue for Q1?");
+ * </pre>
+ *
+ * @see RagInterface
+ * @see ChatClient
+ * @see VectorStore
+ * @see PagePdfDocumentReader
+ * @see TokenTextSplitter
+ */
+
 @Service
 public class FinancialRagService implements RagInterface {
 
